@@ -118,14 +118,12 @@ export async function prepareAgentRun(
 
   // Add cache breakpoint to last history message (before new user message)
   // so the conversation prefix is cached across turns
+  // (No-op for OpenAI, but harmless to keep the structure)
   if (prunedMessages.length >= 2) {
     const lastHistoryIndex = prunedMessages.length - 2;
     const msg = prunedMessages[lastHistoryIndex]!;
     prunedMessages[lastHistoryIndex] = {
       ...msg,
-      providerOptions: {
-        anthropic: { cacheControl: { type: "ephemeral" } },
-      },
     };
   }
 
@@ -168,9 +166,9 @@ export async function prepareAgentRun(
     },
   });
 
-  const modelString = instance.anthropicModel.startsWith("anthropic/")
+  const modelString = instance.anthropicModel.startsWith("openai/")
     ? instance.anthropicModel
-    : `anthropic/${instance.anthropicModel}`;
+    : `openai/${instance.anthropicModel}`;
   const model = modelString;
 
   const agent = new ToolLoopAgent({
@@ -178,9 +176,6 @@ export async function prepareAgentRun(
     instructions: {
       role: "system",
       content: systemPrompt,
-      providerOptions: {
-        anthropic: { cacheControl: { type: "ephemeral" } },
-      },
     } satisfies SystemModelMessage,
     tools: allTools,
     stopWhen: stepCountIs(100),

@@ -38,22 +38,22 @@ export const CURATED_EMOJIS = [
 
 export const MODELS = [
   {
-    value: "claude-opus-4-6" as const,
-    label: "Claude Opus 4.6",
+    value: "gpt-4o" as const,
+    label: "GPT-4o",
     description: "Most capable",
     cost: "$$$",
   },
   {
-    value: "claude-sonnet-4-5-20250929" as const,
-    label: "Claude Sonnet 4.5",
-    description: "Balanced",
-    cost: "$$",
-  },
-  {
-    value: "claude-haiku-4-5-20251001" as const,
-    label: "Claude Haiku 4.5",
+    value: "gpt-4o-mini" as const,
+    label: "GPT-4o Mini",
     description: "Fast & affordable",
     cost: "$",
+  },
+  {
+    value: "gpt-4-turbo" as const,
+    label: "GPT-4 Turbo",
+    description: "Balanced",
+    cost: "$$",
   },
 ] as const;
 

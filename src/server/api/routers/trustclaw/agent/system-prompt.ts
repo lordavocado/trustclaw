@@ -168,7 +168,7 @@ const MESSAGING_GUIDELINES = `## Messaging Style
 export function buildSystemPrompt(params: SystemPromptParams): string {
   const sections: string[] = [];
 
-  sections.push("# TrustClaw by Composio Agent");
+  sections.push("# Benny - Your AI Accountant by Bennybooks");
 
   if (params.soulPrompt) {
     sections.push(params.soulPrompt);
