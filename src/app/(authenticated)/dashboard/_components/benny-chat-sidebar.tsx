@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import type { UIMessage } from "@ai-sdk/react";
-import { Bot, Send, Loader2 } from "lucide-react";
-import { useChatHook } from "./use-chat-hook";
+import { Bot, Send } from "lucide-react";
 
 const QUICK_PROMPTS = [
   "Compare to last July",
@@ -11,44 +9,56 @@ const QUICK_PROMPTS = [
   "Verify 1099s",
 ];
 
-interface BennyChatSidebarProps {
-  initialMessages: UIMessage[];
-  streamId: string | null;
-  isLoading: boolean;
-  historyPageCount: number;
-  fetchOlderMessages: () => void;
-  hasOlderMessages: boolean;
-  isFetchingOlderMessages: boolean;
+interface DemoMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  alert?: { title: string; body: string };
+  listItems?: string[];
 }
 
-export function BennyChatSidebar({
-  initialMessages,
-  streamId,
-  isLoading,
-  historyPageCount,
-  fetchOlderMessages,
-  hasOlderMessages,
-  isFetchingOlderMessages,
-}: BennyChatSidebarProps) {
-  const { sendMessage, stop, messages, status, setMessages } = useChatHook({
-    initialMessages,
-    streamId,
-  });
+const DEMO_MESSAGES: DemoMessage[] = [
+  {
+    id: "1",
+    role: "assistant",
+    content:
+      "Good morning, Director. I've analyzed your recent Stripe payouts. Your revenue is up 12% this week. Would you like a breakdown of the top growth drivers?",
+  },
+  {
+    id: "2",
+    role: "user",
+    content:
+      "Yes, show me the top 3 drivers and check if I have any tax deadlines soon.",
+  },
+  {
+    id: "3",
+    role: "assistant",
+    content: "Certainly. Here is what's driving your growth:",
+    listItems: [
+      "New Enterprise Plan (+$12k)",
+      "Expansion in EU region (+$8k)",
+      "Reduced churn in Tier 2 (+$4k)",
+    ],
+    alert: {
+      title: "Alert",
+      body: "Q3 Estimated Tax Payment is due in 2 days ($12,450.00).",
+    },
+  },
+];
 
+export function BennyChatSidebar() {
+  const [messages, setMessages] = useState<DemoMessage[]>(DEMO_MESSAGES);
   const [input, setInput] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const isStreaming = status === "streaming" || status === "submitted";
   const canSend = input.trim().length > 0 && !isStreaming;
 
-  // Auto-scroll to bottom on new messages
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Auto-resize textarea
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -57,11 +67,33 @@ export function BennyChatSidebar({
     }
   }, [input]);
 
-  const handleSend = useCallback(() => {
-    if (!canSend) return;
-    sendMessage(input.trim());
-    setInput("");
-  }, [canSend, input, sendMessage]);
+  const handleSend = useCallback(
+    (text?: string) => {
+      const content = text ?? input.trim();
+      if (!content || isStreaming) return;
+
+      const userMsg: DemoMessage = {
+        id: `user-${Date.now()}`,
+        role: "user",
+        content,
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      setInput("");
+      setIsStreaming(true);
+
+      // Simulate Benny response
+      setTimeout(() => {
+        const aiMsg: DemoMessage = {
+          id: `ai-${Date.now()}`,
+          role: "assistant",
+          content: `I'll look into "${content}" right away. Based on your current financials, I can provide a detailed analysis. Let me pull the latest data from your connected accounts.`,
+        };
+        setMessages((prev) => [...prev, aiMsg]);
+        setIsStreaming(false);
+      }, 1500);
+    },
+    [input, isStreaming],
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -105,80 +137,38 @@ export function BennyChatSidebar({
       </div>
 
       {/* Chat Messages */}
-      <div
-        ref={chatContainerRef}
-        className="chat-scroll flex flex-1 flex-col gap-6 overflow-y-auto p-6"
-      >
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-          </div>
-        ) : messages.length === 0 ? (
-          /* Demo messages when no history */
-          <>
-            <ChatBubble
-              sender="BENNY"
-              time="09:12 AM"
-              align="left"
-            >
-              <p className="text-sm leading-relaxed text-ink">
-                {"Good morning, Director. I've analyzed your recent Stripe payouts. Your revenue is up 12% this week. Would you like a breakdown of the top growth drivers?"}
-              </p>
-            </ChatBubble>
-
-            <ChatBubble sender="YOU" time="09:15 AM" align="right">
-              <p className="text-sm">
-                Yes, show me the top 3 drivers and check if I have any tax
-                deadlines soon.
-              </p>
-            </ChatBubble>
-
-            <ChatBubble sender="BENNY" time="09:15 AM" align="left">
-              <p className="mb-3 text-sm leading-relaxed text-ink">
-                {"Certainly. Here is what's driving your growth:"}
-              </p>
-              <ul className="mb-4 flex flex-col gap-1 pl-4 text-sm text-ink">
-                <li className="list-disc">New Enterprise Plan (+$12k)</li>
-                <li className="list-disc">Expansion in EU region (+$8k)</li>
-                <li className="list-disc">Reduced churn in Tier 2 (+$4k)</li>
-              </ul>
-              <div className="rounded border-l-4 border-destructive bg-destructive/5 p-3">
-                <p className="text-[10px] font-semibold uppercase text-destructive">
-                  Alert
-                </p>
-                <p className="text-sm font-medium text-ink">
-                  Q3 Estimated Tax Payment is due in 2 days ($12,450.00).
-                </p>
-              </div>
-            </ChatBubble>
-          </>
-        ) : (
-          /* Real chat messages */
-          messages.map((message, i) => (
-            <ChatBubble
-              key={message.id}
-              sender={message.role === "user" ? "YOU" : "BENNY"}
-              time={formatTime(i)}
-              align={message.role === "user" ? "right" : "left"}
-            >
-              {message.parts
-                .filter(
-                  (p): p is { type: "text"; text: string } =>
-                    p.type === "text",
-                )
-                .map((p, j) => (
-                  <p
-                    key={j}
-                    className="whitespace-pre-wrap text-sm leading-relaxed"
-                  >
-                    {p.text}
-                  </p>
+      <div className="chat-scroll flex flex-1 flex-col gap-6 overflow-y-auto p-6">
+        {messages.map((message, i) => (
+          <ChatBubble
+            key={message.id}
+            sender={message.role === "user" ? "YOU" : "BENNY"}
+            time={formatTime(i)}
+            align={message.role === "user" ? "right" : "left"}
+          >
+            <p className="whitespace-pre-wrap text-sm leading-relaxed">
+              {message.content}
+            </p>
+            {message.listItems && (
+              <ul className="mt-3 flex flex-col gap-1 pl-4 text-sm">
+                {message.listItems.map((item, j) => (
+                  <li key={j} className="list-disc">
+                    {item}
+                  </li>
                 ))}
-            </ChatBubble>
-          ))
-        )}
+              </ul>
+            )}
+            {message.alert && (
+              <div className="mt-4 rounded border-l-4 border-destructive bg-destructive/5 p-3">
+                <p className="text-[10px] font-semibold uppercase text-destructive">
+                  {message.alert.title}
+                </p>
+                <p className="text-sm font-medium">{message.alert.body}</p>
+              </div>
+            )}
+          </ChatBubble>
+        ))}
 
-        {isStreaming && messages[messages.length - 1]?.role === "user" && (
+        {isStreaming && (
           <div className="flex items-center gap-2 px-1">
             <div className="flex gap-1">
               <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:0ms]" />
@@ -204,11 +194,11 @@ export function BennyChatSidebar({
             onKeyDown={handleKeyDown}
             placeholder="Ask anything about your books..."
             disabled={isStreaming}
-            rows={3}
-            className="w-full resize-none rounded-xl border border-border bg-muted py-3 pl-4 pr-12 font-[family-name:var(--font-body)] text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+            rows={1}
+            className="w-full resize-none rounded-xl border border-border bg-muted py-3 pl-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <button
-            onClick={handleSend}
+            onClick={() => handleSend()}
             disabled={!canSend}
             className="absolute bottom-3 right-3 rounded-lg bg-[#fc7136] p-2 text-white shadow-sm transition-transform hover:scale-105 disabled:opacity-50"
           >
@@ -219,12 +209,9 @@ export function BennyChatSidebar({
           {QUICK_PROMPTS.map((prompt) => (
             <button
               key={prompt}
-              onClick={() => {
-                if (!isStreaming) {
-                  sendMessage(prompt);
-                }
-              }}
-              className="rounded bg-muted px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-accent"
+              onClick={() => handleSend(prompt)}
+              disabled={isStreaming}
+              className="rounded bg-muted px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-accent disabled:opacity-50"
             >
               {prompt}
             </button>
