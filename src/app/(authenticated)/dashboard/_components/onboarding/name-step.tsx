@@ -15,7 +15,7 @@ export function NameStep({ value, onChange, onNext }: NameStepProps) {
 
   return (
     <StepLayout
-      title="Hey! Just spawned in. What's my name?"
+      title="What should your business call me?"
       onNext={onNext}
       nextDisabled={!canContinue}
     >
@@ -23,7 +23,7 @@ export function NameStep({ value, onChange, onNext }: NameStepProps) {
         <Input
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Luna, Jarvis, Buddy..."
+          placeholder="Benny, BookKeeper, Finley..."
           maxLength={30}
           className="min-h-[44px]"
           autoFocus

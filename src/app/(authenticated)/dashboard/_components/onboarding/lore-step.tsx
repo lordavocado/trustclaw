@@ -21,8 +21,8 @@ export function LoreStep({
 }: LoreStepProps) {
   return (
     <StepLayout
-      title="Any more lore for me?"
-      subtitle="Optional - give me some backstory or special instructions"
+      title="Tell me about your business"
+      subtitle="Optional - help me understand your industry, size, and what you need"
       onNext={onNext}
       onBack={onBack}
       onSkip={onSkip}
@@ -32,7 +32,7 @@ export function LoreStep({
         <Textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="e.g., You're a time-traveling librarian who speaks in metaphors..."
+          placeholder="e.g., We're a 5-person SaaS startup doing ~$30k MRR. Main expenses are AWS, salaries, and marketing..."
           maxLength={500}
           className="min-h-[120px]"
         />

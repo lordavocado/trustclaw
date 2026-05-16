@@ -38,10 +38,16 @@ export const CURATED_EMOJIS = [
 
 export const MODELS = [
   {
-    value: "gpt-4o" as const,
-    label: "GPT-4o",
+    value: "gpt-5.5" as const,
+    label: "GPT-5.5",
     description: "Most capable",
     cost: "$$$",
+  },
+  {
+    value: "gpt-4o" as const,
+    label: "GPT-4o",
+    description: "Balanced",
+    cost: "$$",
   },
   {
     value: "gpt-4o-mini" as const,
@@ -49,18 +55,17 @@ export const MODELS = [
     description: "Fast & affordable",
     cost: "$",
   },
-  {
-    value: "gpt-4-turbo" as const,
-    label: "GPT-4 Turbo",
-    description: "Balanced",
-    cost: "$$",
-  },
 ] as const;
 
 export const INTEGRATION_DESCRIPTIONS: Record<string, string> = {
-  gmail: "Read and send emails",
-  github: "Manage repos and issues",
-  slack: "Send and read messages",
+  gmail: "Monitor emails for receipts & invoices",
+  github: "Track project expenses & billing",
+  slack: "Financial alerts & team updates",
+  stripe: "Payment & revenue tracking",
+  quickbooks: "Sync with QuickBooks Online",
+  xero: "Sync with Xero accounting",
+  googlesheets: "Export reports to spreadsheets",
+  notion: "Financial docs & knowledge base",
 };
 
 export const WRITING_STYLE_ITEM_MAP: Record<WritingStyleKey, string> = {

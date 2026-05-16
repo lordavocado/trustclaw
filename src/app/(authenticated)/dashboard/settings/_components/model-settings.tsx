@@ -16,19 +16,19 @@ import {
 
 const MODELS = [
   {
+    value: "gpt-5.5",
+    label: "GPT-5.5",
+    description: "Most capable",
+  },
+  {
     value: "gpt-4o",
     label: "GPT-4o",
-    description: "Most capable",
+    description: "Balanced",
   },
   {
     value: "gpt-4o-mini",
     label: "GPT-4o Mini",
     description: "Fast & affordable",
-  },
-  {
-    value: "gpt-4-turbo",
-    label: "GPT-4 Turbo",
-    description: "Balanced",
   },
 ] as const;
 
@@ -39,7 +39,7 @@ interface ModelSettingsProps {
 }
 
 export function ModelSettings({ currentModel }: ModelSettingsProps) {
-  const parsed = allowedAnthropicModelSchema.catch("gpt-4o").parse(currentModel);
+  const parsed = allowedAnthropicModelSchema.catch("gpt-5.5").parse(currentModel);
   const [selectedModel, setSelectedModel] = useState<AllowedModel>(parsed);
   const utils = trpc.useUtils();
 
