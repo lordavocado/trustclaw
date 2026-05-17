@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { trpc } from "~/clients/trpc";
 import { BennyChatSidebar } from "./benny-chat-sidebar";
 import { FinancialDashboard } from "./financial-dashboard";
 import { DashboardNavbar } from "./dashboard-top-nav";
 import { OnboardingClient } from "./onboarding/onboarding-client";
+import { LedgerView } from "./ledger";
 
 export function BennyDashboard() {
   const { data: status, isLoading } = trpc.trustclaw.getStatus.useQuery();
@@ -34,25 +37,33 @@ export function BennyDashboard() {
 }
 
 function BennyDashboardContent() {
-  const { data: historyData } = trpc.trustclaw.getHistory.useQuery();
+  const [showLedger, setShowLedger] = useState(false);
+  const { data: historyData } = trpc.trustclaw.getHistory.useQuery({ limit: 50 });
   const { data: streamData } = trpc.trustclaw.getStreamingMessage.useQuery();
 
   const initialMessages = historyData?.messages ?? [];
-  const streamId = streamData?.streamId ?? null;
+  const streamId = streamData?.messageId ?? null;
 
   return (
-    <div className="flex h-full w-full">
-      {/* Left: Benny AI Chat Sidebar */}
-      <BennyChatSidebar
-        initialMessages={initialMessages}
-        streamId={streamId}
-      />
+    <>
+      <div className="flex h-full w-full">
+        {/* Left: Benny AI Chat Sidebar */}
+        <BennyChatSidebar
+          initialMessages={initialMessages}
+          streamId={streamId}
+        />
 
-      {/* Right: Main Dashboard Content */}
-      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-        <DashboardNavbar />
-        <FinancialDashboard />
+        {/* Right: Main Dashboard Content */}
+        <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
+          <DashboardNavbar />
+          <FinancialDashboard onViewLedger={() => setShowLedger(true)} />
+        </div>
       </div>
-    </div>
+
+      {/* Full-screen Ledger View */}
+      <AnimatePresence>
+        {showLedger && <LedgerView onClose={() => setShowLedger(false)} />}
+      </AnimatePresence>
+    </>
   );
 }

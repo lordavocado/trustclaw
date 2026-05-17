@@ -9,6 +9,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { ArrowRight, AlertCircle } from "lucide-react";
+import { DEMO_TRANSACTIONS, calculateTransactionStats } from "./ledger/demo-data";
 
 const CHART_DATA = [
   { month: "Jan", forecast: 38000, actual: 36000 },
@@ -25,28 +27,15 @@ const CHART_DATA = [
   { month: "Dec", forecast: 64000, actual: null },
 ];
 
-const RECENT_ACTIVITY = [
-  {
-    date: "Today",
-    description: "Stripe Payout - Ref #9021",
-    amount: "+$4,200.00",
-    type: "income" as const,
-  },
-  {
-    date: "Yesterday",
-    description: "Amazon Web Services - Cloud",
-    amount: "-$1,150.00",
-    type: "expense" as const,
-  },
-  {
-    date: "Yesterday",
-    description: "Monthly Office Rent",
-    amount: "-$6,500.00",
-    type: "expense" as const,
-  },
-];
+const RECENT_ACTIVITY = DEMO_TRANSACTIONS.slice(0, 5);
 
-export function FinancialDashboard() {
+interface FinancialDashboardProps {
+  onViewLedger: () => void;
+}
+
+export function FinancialDashboard({ onViewLedger }: FinancialDashboardProps) {
+  const stats = calculateTransactionStats(DEMO_TRANSACTIONS);
+  const needsAttentionCount = stats.needsAttention;
   return (
     <main className="flex-1 p-8">
       {/* Header */}
@@ -84,37 +73,72 @@ export function FinancialDashboard() {
       {/* Recent Activity */}
       <div className="mb-8 overflow-hidden rounded-lg border border-border bg-card shadow-sm">
         <div className="flex items-center justify-between border-b border-border bg-muted/30 px-6 py-4">
-          <h2 className="text-sm font-bold text-foreground">Recent Activity</h2>
-          <button className="text-[10px] font-semibold text-[#a83900] hover:underline">
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-bold text-foreground">Recent Activity</h2>
+            {needsAttentionCount > 0 && (
+              <span className="flex items-center gap-1 rounded-full bg-[#a83900]/10 px-2 py-0.5 text-[10px] font-medium text-[#a83900]">
+                <AlertCircle className="h-3 w-3" />
+                {needsAttentionCount} need attention
+              </span>
+            )}
+          </div>
+          <button 
+            onClick={onViewLedger}
+            className="flex items-center gap-1 text-[10px] font-semibold text-[#a83900] hover:underline"
+          >
             View Ledger
+            <ArrowRight className="h-3 w-3" />
           </button>
         </div>
         <table className="w-full text-left">
           <tbody className="divide-y divide-border">
-            {RECENT_ACTIVITY.map((item, i) => (
+            {RECENT_ACTIVITY.map((item) => (
               <tr
-                key={i}
-                className="transition-colors hover:bg-muted/30"
+                key={item.id}
+                onClick={onViewLedger}
+                className="cursor-pointer transition-colors hover:bg-muted/30"
               >
                 <td className="px-6 py-3 font-mono text-[10px] text-muted-foreground">
-                  {item.date}
+                  {new Date(item.date).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </td>
-                <td className="px-6 py-3 font-[family-name:var(--font-body)] text-sm font-medium text-foreground">
-                  {item.description}
+                <td className="px-6 py-3">
+                  <div className="flex items-center gap-2">
+                    {(item.status === "needs_review" || item.status === "needs_receipt") && (
+                      <AlertCircle className="h-3.5 w-3.5 text-[#a83900]" />
+                    )}
+                    <span className="font-[family-name:var(--font-body)] text-sm font-medium text-foreground">
+                      {item.description}
+                    </span>
+                  </div>
                 </td>
                 <td
                   className={`px-6 py-3 text-right font-mono text-[10px] ${
-                    item.type === "income"
+                    item.amount >= 0
                       ? "text-[#44b48b]"
-                      : "text-[#a83900]"
+                      : "text-foreground"
                   }`}
                 >
-                  {item.amount}
+                  {item.amount >= 0 ? "+" : ""}
+                  {item.amount.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  })}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div className="border-t border-border bg-muted/20 px-6 py-3">
+          <button
+            onClick={onViewLedger}
+            className="w-full text-center text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            View all {stats.totalCount} transactions
+          </button>
+        </div>
       </div>
 
       {/* Performance Analytics Chart */}
@@ -188,9 +212,11 @@ export function FinancialDashboard() {
                   boxShadow:
                     "0 1px 2px rgba(0,0,0,0.1), 0 0 0 1px rgba(17,26,74,0.05)",
                 }}
-                formatter={(value: number) => [
-                  `$${(value / 1000).toFixed(1)}k`,
-                ]}
+                formatter={(value) =>
+                  typeof value === "number"
+                    ? `$${(value / 1000).toFixed(1)}k`
+                    : value
+                }
               />
               <Area
                 type="monotone"
