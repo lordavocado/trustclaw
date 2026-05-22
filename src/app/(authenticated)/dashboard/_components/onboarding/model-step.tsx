@@ -28,8 +28,8 @@ export function ModelStep({
 
   return (
     <StepLayout
-      title="Choose my brain!"
-      subtitle="Which Claude model should power me?"
+      title="Pick Benny's brain power"
+      subtitle="Which OpenAI model should power your accountant?"
       onNext={onNext}
       onBack={onBack}
     >

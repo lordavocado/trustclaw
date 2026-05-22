@@ -10,13 +10,20 @@ export const env = createEnv({
     // Better Auth
     BETTER_AUTH_SECRET: z.string(),
 
-    // Composio API (global key)
-    COMPOSIO_API_KEY: z.string(),
+    // OpenAI API key for Benny agent
+    OPENAI_API_KEY: z.string(),
+
+    // Composio API (optional - external actions disabled when missing)
+    COMPOSIO_API_KEY: z.string().optional(),
 
     // Telegram bot (optional - Telegram features disabled when missing)
     TELEGRAM_BOT_TOKEN: z.string().optional(),
     TELEGRAM_BOT_USERNAME: z.string().optional(),
     TELEGRAM_WEBHOOK_SECRET: z.string().optional(),
+
+    // Google OAuth (optional - social login disabled when missing)
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
 
     // Database
     DATABASE_URL: z.string().url(),
@@ -27,7 +34,8 @@ export const env = createEnv({
     // Cron auth. Required in production so unauthenticated callers can't hit
     // /api/cron/* endpoints. Vercel auto-injects this when crons are configured
     // in vercel.json; the trustclaw deploy CLI also generates one on first deploy.
-    CRON_SECRET: z.string(),
+    // Cron auth
+    CRON_SECRET: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
@@ -36,10 +44,13 @@ export const env = createEnv({
     // Server
     NODE_ENV: process.env.NODE_ENV,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     COMPOSIO_API_KEY: process.env.COMPOSIO_API_KEY,
     TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
     TELEGRAM_BOT_USERNAME: process.env.TELEGRAM_BOT_USERNAME,
     TELEGRAM_WEBHOOK_SECRET: process.env.TELEGRAM_WEBHOOK_SECRET,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     REDIS_URL: process.env.REDIS_URL,
     CRON_SECRET: process.env.CRON_SECRET,

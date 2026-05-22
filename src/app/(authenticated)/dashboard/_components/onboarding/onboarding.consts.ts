@@ -38,29 +38,34 @@ export const CURATED_EMOJIS = [
 
 export const MODELS = [
   {
-    value: "claude-opus-4-6" as const,
-    label: "Claude Opus 4.6",
+    value: "gpt-5.5" as const,
+    label: "GPT-5.5",
     description: "Most capable",
     cost: "$$$",
   },
   {
-    value: "claude-sonnet-4-5-20250929" as const,
-    label: "Claude Sonnet 4.5",
+    value: "gpt-4o" as const,
+    label: "GPT-4o",
     description: "Balanced",
     cost: "$$",
   },
   {
-    value: "claude-haiku-4-5-20251001" as const,
-    label: "Claude Haiku 4.5",
+    value: "gpt-4o-mini" as const,
+    label: "GPT-4o Mini",
     description: "Fast & affordable",
     cost: "$",
   },
 ] as const;
 
 export const INTEGRATION_DESCRIPTIONS: Record<string, string> = {
-  gmail: "Read and send emails",
-  github: "Manage repos and issues",
-  slack: "Send and read messages",
+  gmail: "Monitor emails for receipts & invoices",
+  github: "Track project expenses & billing",
+  slack: "Financial alerts & team updates",
+  stripe: "Payment & revenue tracking",
+  quickbooks: "Sync with QuickBooks Online",
+  xero: "Sync with Xero accounting",
+  googlesheets: "Export reports to spreadsheets",
+  notion: "Financial docs & knowledge base",
 };
 
 export const WRITING_STYLE_ITEM_MAP: Record<WritingStyleKey, string> = {

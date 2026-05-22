@@ -17,9 +17,9 @@ import { TerminalPane } from "../terminal/terminal-pane";
 import { ComposioCta } from "./composio-cta";
 
 const SAMPLE_PROMPTS = [
-  "Summarize my emails for today",
-  "What's on my calendar for tomorrow",
-  "Catch me up on latest messages on Slack",
+  "Summarize my expenses for this month",
+  "Check my inbox for any new invoices",
+  "What are my upcoming tax deadlines?",
 ];
 
 const START_INDEX = 100_000;

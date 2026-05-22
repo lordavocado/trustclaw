@@ -16,18 +16,18 @@ import {
 
 const MODELS = [
   {
-    value: "claude-opus-4-6",
-    label: "Claude Opus 4.6",
+    value: "gpt-5.5",
+    label: "GPT-5.5",
     description: "Most capable",
   },
   {
-    value: "claude-sonnet-4-5-20250929",
-    label: "Claude Sonnet 4.5",
+    value: "gpt-4o",
+    label: "GPT-4o",
     description: "Balanced",
   },
   {
-    value: "claude-haiku-4-5-20251001",
-    label: "Claude Haiku 4.5",
+    value: "gpt-4o-mini",
+    label: "GPT-4o Mini",
     description: "Fast & affordable",
   },
 ] as const;
@@ -39,7 +39,7 @@ interface ModelSettingsProps {
 }
 
 export function ModelSettings({ currentModel }: ModelSettingsProps) {
-  const parsed = allowedAnthropicModelSchema.catch("claude-sonnet-4-5-20250929").parse(currentModel);
+  const parsed = allowedAnthropicModelSchema.catch("gpt-5.5").parse(currentModel);
   const [selectedModel, setSelectedModel] = useState<AllowedModel>(parsed);
   const utils = trpc.useUtils();
 
@@ -58,12 +58,12 @@ export function ModelSettings({ currentModel }: ModelSettingsProps) {
       <CardHeader>
         <CardTitle>Model</CardTitle>
         <CardDescription>
-          Choose which Claude model powers your assistant
+          Choose which AI model powers Benny
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>Claude Model</Label>
+          <Label>AI Model</Label>
           <Select
             value={selectedModel}
             onValueChange={(val) => {

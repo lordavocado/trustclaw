@@ -1,30 +1,23 @@
-import { LandingPage } from "./_components/landing-page";
+import { LandingNav } from "./_components/landing-nav";
+import { HeroSection } from "./_components/hero-section";
+import { FeaturesSection } from "./_components/features-section";
+import { HowItWorksSection } from "./_components/comparison-section";
+import { PricingSection } from "./_components/pricing-section";
+import { BottomCtaSection } from "./_components/bottom-cta-section";
+import { LandingFooter } from "./_components/landing-footer";
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "TrustClaw",
-  description:
-    "Your 24/7 AI assistant with 1000+ integrations via OAuth and sandboxed execution.",
-  applicationCategory: "Productivity",
-  operatingSystem: "Web",
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-  },
-  creator: {
-    "@type": "Organization",
-    name: "Composio",
-    url: "https://composio.dev",
-  },
-};
-
-export default async function Page() {
+export default function Page() {
   return (
-    <>
-      <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      <LandingPage />
-    </>
+    <div className="min-h-screen bg-background">
+      <LandingNav />
+      <main>
+        <HeroSection />
+        <FeaturesSection />
+        <HowItWorksSection />
+        <PricingSection />
+        <BottomCtaSection />
+      </main>
+      <LandingFooter />
+    </div>
   );
 }

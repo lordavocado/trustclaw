@@ -115,7 +115,7 @@ export function Onboarding({
       lore: savedState?.lore ?? "",
       anthropicModel: parsedModel.success
         ? parsedModel.data
-        : "claude-sonnet-4-5-20250929",
+        : "gpt-5.5",
     };
   });
 
@@ -214,7 +214,7 @@ export function Onboarding({
                 Setting things up...
               </h2>
               <p className="text-muted-foreground mt-1 text-sm">
-                Creating your TrustClaw instance and connecting tools
+                Setting up your Benny accountant and connecting tools
               </p>
             </motion.div>
             {createInstance.isError && (

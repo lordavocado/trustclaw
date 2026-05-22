@@ -30,7 +30,7 @@ export function TrustClawBrand({ size = "md", logoLink }: TrustClawBrandProps) {
       )}
       <div className="relative">
         <span className={`${s.text} font-bold leading-tight text-foreground`}>
-          TrustClaw
+          Bennybooks
         </span>
         <Link
           href="https://composio.dev"

@@ -2,6 +2,7 @@ import { PrismaClient } from "~/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { env } from "~/env";
 
+
 function ensureVerifyFullSsl(url: string): string {
   const parsed = new URL(url);
   if (parsed.searchParams.get("sslmode") !== "verify-full") {

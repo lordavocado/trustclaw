@@ -67,7 +67,7 @@ export function IntegrationsStep({
   if (error) {
     return (
       <StepLayout
-        title="Connect my tools!"
+        title="Connect your financial tools"
         subtitle="Something went wrong loading integrations."
         onBack={onBack}
         onSkip={onSkip}
@@ -95,8 +95,8 @@ export function IntegrationsStep({
 
   return (
     <StepLayout
-      title="Connect my tools!"
-      subtitle="These let me work with your favorite services"
+      title="Connect your financial tools"
+      subtitle="These let Benny monitor your accounts and capture receipts"
       onNext={onNext}
       onBack={onBack}
       onSkip={onSkip}
@@ -173,7 +173,7 @@ export function IntegrationsStep({
 
       <motion.div variants={itemVariants}>
         <p className="text-muted-foreground text-center text-xs">
-          I support 1000+ more tools - just ask me in the chat later
+          Benny supports 1000+ integrations - connect more anytime from the chat
         </p>
       </motion.div>
     </StepLayout>
